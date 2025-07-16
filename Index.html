@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta property="og:title" content="Tic Tac Toe" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="Play Tic Tac Toe Game online!" />
+<meta property="og:image" content="./assets/Images/image.png" />
+<title>Tic Tac Toe</title>
+<link rel="icon" href="./assets/Images/tic-tac-toe.png" type="image/x-icon">
+<audio id="win">
+<source src="./assets/sound/winsound.mp3" type="audio/mpeg">
+</audio>
+<audio id="tie">
+<source src="./assets/sound/gametie.mp3" type="audio/mpeg">
+</audio>
+<style>/* "Roboto" font from google fonts*/
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+*,
+*::after,
+*::before {
+   box-sizing: border-box;
+   font-family: inherit;
+}
+
+:root {
+   --boardbg: #dcf5ff;
+   --aliceblue: aliceblue;
+}
+
+body {
+   margin: 0;
+   padding: 0;
+   background: #2A7B9B;
+background: linear-gradient(90deg, rgba(42, 123, 155, 1) 0%, rgba(141, 199, 87, 0.77) 31%, rgba(237, 221, 83, 1) 100%); 
+   font-family: "Roboto", sans-serif;
+   background-attachment: fixed;
+}
+
+.parent {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+}
+
+.playground {
+   display: grid;
+   grid-template-columns: auto auto auto;
+   box-shadow: 0 10px 20px rgba(43, 41, 41, 0.2);
+   border: 1px solid rgb(255, 255, 255);
+   border-width: 2px;
+   padding: 10px;
+   justify-content: center;
+   border-radius: 1rem;
+   border-radius: 5px;
+   margin-top: 30px;
+}
+
+.box {
+   background-color: rgb(14, 135, 77);
+   border: 1px solid #ffffff;
+   border-width: 2px;
+   border-radius: 5px;
+   padding: 2px;
+   margin: 2px;
+   width: 7rem;
+   height: 7rem;
+   text-align: center;
+   font-size: 50px;
+   font-weight: bold;
+   transition: background-color 0.2s ease-in-out;
+}
+
+.box:hover {
+   background-color: rgb(190, 231, 231);
+}
+
+.box:active {
+   background-color: rgb(70, 16, 111);
+   border-radius: 5px;
+   margin: 0;
+}
+
+.title {background: linear-gradient(90deg, rgba(42, 123, 155, 1) 0%, rgba(141, 199, 87, 0.77) 31%, rgba(237, 221, 83, 1) 100%); 
+   border-radius: 10px;
+   padding: 5px 28px;
+   font-size: 2.5rem;
+   margin-top: 10vh;
+   margin-bottom: 2vh;
+   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.444);
+   border-top: 1px solid white;
+   border-bottom: 1px solid white;
+   text-transform: uppercase;
+background: linear-gradient(90deg, rgb(11, 94, 126) 0%, rgba(93, 152, 38, 0.77) 31%, rgb(130, 119, 20) 100%); 
+   background-clip: border-box;
+   background-size: 200% auto;
+   color: #fff;
+   background-clip: text;
+   text-fill-color: transparent;
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   animation: textclip 2s linear infinite;
+   display: inline-block;
+}
+@keyframes textclip {
+   to {
+      background-position: 300% center;
+   }
+}
+
+h1 {
+   background-color: #09036c;
+   background-image: linear-gradient(75deg, #0c4536, #19789b 48%, #cedb18);
+   border: 0.5 thin black;
+   background-repeat: no-repeat;
+   border-radius: 10px;
+   color: black;
+   font-size: 2rem;
+   text-align: center;
+   padding: 0.5rem;
+}
+
+#result {
+   background-color: transparent;
+   background-image: none;
+   background-clip: text;
+   color: #2e8746;
+   margin-top: -10px;
+}
+
+.container {
+   padding: auto;
+   text-align: center;
+   margin-top: auto;
+   position: relative;
+   height: 10px;
+   width: 100%;
+}
+
+.btn {
+   padding: 20px 60px;
+   background-color: rgb(216, 180, 234);
+   border: 0;
+   outline: none;
+   cursor: pointer;
+   font-size: 22px;
+   font-weight: 500;
+   border-radius: 30px;
+   position: absolute;
+   right: 30px;
+   bottom: 50px;
+}
+
+.btn:hover {
+   background-color: rgb(203, 153, 228);
+}
+
+.feature-btn {
+   padding: 14px 12px 9px 12px;
+   background-color: rgb(182, 243, 248);
+   border: 0;
+   outline: none;
+   cursor: pointer;
+   font-size: 22px;
+   font-weight: 500;
+   border-radius: 30px;
+   position: relative;
+}
+
+.feature-btn:hover {
+   background-color: rgb(132, 206, 247);
+}
+
+.btn-container {
+   position: relative;
+   top: 1rem;
+   width: 25%;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+.popup {
+   min-width: 600px;
+   background: rgb(169, 121, 193);
+   border-radius: 5px;
+   position: absolute;
+   top: 0;
+   left: 50%;
+   transform: translate(-50%, -50%) scale(0.1);
+   font-size: 19px;
+   padding: 0 30px 30px;
+   visibility: hidden;
+   transition: transform 0.4s, top 0.4s;
+   transition: transform 0.4s, top 0.4s, visibility 0.4s;
+}
+
+.popup h2 {
+   font-size: 30px;
+   font-weight: 500;
+   margin: 30px 0 10px;
+}
+
+.popup button {
+   width: 100%;
+   margin-top: 30px;
+   padding: 10px 0;
+   background-color: #ff6868;
+   color: white;
+   border: 0;
+   outline: none;
+   font-size: 18px;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.popup button:hover {
+   background: #ee4e4e;
+}
+
+.open-popup {
+   visibility: visible;
+   top: 50%;
+   transform: translate(-50%, -50%) scale(1);
+   transition: all 0.5s ease-in-out;
+}
+
+.popup ol li {
+   font-size: 1rem;
+   margin-bottom: 15px;
+   line-height: 0.95;
+}
+
+/*Mobile screen styles*/
+@media (max-width: 600px) {
+   .title {
+      font-size: 2.2rem;
+      margin-bottom: 7vh;
+   }
+   .box {
+      width: 6rem;
+      height: 6rem;
+      font-size: 40px;
+   }
+   .btn {
+      padding: 10px 30px;
+      font-size: 15px;
+   }
+   .popup {
+      min-width: 400px;
+      padding: 0 10px 20px 10px;
+   }
+   .popup h2 {
+      font-size: 20px;
+   }
+}</style>
+</head>
+<body>
+<div class="parent">
+   <h1 class="title">Tic Tac Toe Game</h1>
+   <div class="playground">
+      <button class="box" id="box1" onclick="box(1)"></button>
+      <button class="box" id="box2" onclick="box(2)"></button>
+      <button class="box" id="box3" onclick="box(3)"></button>
+      <button class="box" id="box4" onclick="box(4)"></button>
+      <button class="box" id="box5" onclick="box(5)"></button>
+      <button class="box" id="box6" onclick="box(6)"></button>
+      <button class="box" id="box7" onclick="box(7)"></button>
+      <button class="box" id="box8" onclick="box(8)"></button>
+      <button class="box" id="box9" onclick="box(9)"></button>
+   </div>
+   <div class="btn-container">
+      <button type="button" class="feature-btn" title="Undo" onclick="undoMove()">
+         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z" />
+         </svg>
+      </button>
+      <button type="button" class="feature-btn" title="Reset" onclick="resetGame()">
+         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+         </svg>
+      </button>
+   </div>
+   <h1 id="result">1st Player Turn</h1>
+   <!-- Add Reset and Undo buttons -->
+   <div class="container">
+      <button type="button" class="btn" onclick="openPopup()">Rules</button>
+   </div>
+   <div class="popup" id="popup">
+      <h2>Rules:</h2>
+      <ol>
+         <li>The game is played on a grid that's 3 squares by 3 squares.</li>
+         <li>Player 1 is X and Player 2 is O. Players take turns putting their marks in empty squares.</li>
+         <li>The first player to get 3 of his marks in a row (up, down, across, or diagonally) is the winner.</li>
+         <li>When all 9 squares are full, the game is over. If no player has 3 marks in a row, the game ends in a tie.</li>
+      </ol>
+      <button type="button" onclick="closePopup()">OK</button>
+   </div>
+</div>
+<script>let P1 = true;
+let moves = [];
+let choice = [null, null, null, null, null, null, null, null, null];
+let emptyCells = 9;
+// Function to reset the game
+function resetGame() {
+   P1 = true;
+   emptyCells = 9;
+   moves = [];
+   choice = [null, null, null, null, null, null, null, null, null];
+   document.getElementById("result").innerHTML = "1st Player Turn";
+   for (let i = 1; i <= 9; i++) {
+      const button = document.getElementById("box" + i);
+      button.innerHTML = "";
+      button.disabled = false;
+   }
+   window.location.reload();
+}
+
+// Function to undo the last move
+function undoMove() {
+   if (moves.length > 0) {
+      const idx = moves.pop(); // Get the most recent move
+      const button = document.getElementById("box" + idx);
+      button.innerHTML = "";
+      button.disabled = false;
+      choice[idx - 1] = "-";
+      P1 = !P1;
+      document.getElementById("result").innerHTML = P1
+         ? "1st Player Turn"
+         : "2nd Player Turn";
+   }
+}
+
+// Function to mark cells on board
+function box(idx) {
+   let pos = idx - 1;
+   if (choice[pos] == null) {
+      let cell = document.getElementById("box" + idx);
+      cell.innerHTML = P1 ? "X" : "O";
+      choice[pos] = P1 ? "X" : "O";
+      moves.push(idx);
+      emptyCells = emptyCells - 1;
+      P1 = !P1;
+      document.getElementById("result").innerHTML = P1
+         ? "1st Player Turn"
+         : "2nd Player Turn";
+      checkResult();
+   }
+}
+
+// Helper function to get the coordinates of the last move
+function getLastMove() {
+   for (let row = 2; row >= 0; row--) {
+      for (let col = 2; col >= 0; col--) {
+         if (choice[row][col] !== "-") {
+            return [row, col];
+         }
+      }
+   }
+   return null; // No moves made yet
+}
+
+// Function to FindWinner
+function checkResult() {
+   let checkWinner = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+   ];
+   let isAnyoneWins = false;
+   for (const element of checkWinner) {
+      const [a, b, c] = element;
+      if (choice[a] && choice[a] === choice[b] && choice[b] === choice[c]) {
+         playWinSound();
+         let resultText = choice[a] == "X" ? "Player 1 Win" : "Player 2 Win";
+         document.getElementById("result").innerHTML = resultText;
+         for (let i = 1; i <= 9; i++) {
+            let boardCell = document.getElementById("box" + i);
+            boardCell.disabled = true;
+         }
+         isAnyoneWins = true;
+         setTimeout(resetGame, 4000);
+         return;
+      }
+   }
+   if (!isAnyoneWins && emptyCells == 0) {
+      document.getElementById("result").innerHTML = "It's a Draw!";
+      playTieSound();
+      setTimeout(resetGame, 4000);
+   }
+}
+
+// Function to play the win sound
+function playWinSound() {
+   let winSound = document.getElementById("win");
+   winSound.play(); // Play the win sound
+}
+
+// Function to play the tie sound
+function playTieSound() {
+   let tieSound = document.getElementById("tie");
+   tieSound.play(); // Play the tie sound
+}
+
+let popup = document.getElementById("popup");
+function openPopup() {
+   popup.classList.add("open-popup");
+}
+function closePopup() {
+   popup.classList.remove("open-popup");
+   popup.classList.add("fade-out");
+   setTimeout(() => {
+      popup.classList.remove("visible");
+      popup.classList.remove("fade-out");
+   }, 1000);
+}</script>
+</body>
+</html>
